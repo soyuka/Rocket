@@ -10,6 +10,12 @@ rocket_codegen = { path = "../../core/codegen" }
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
+pretty-bytes = "0.2.2"
+chrono = "0.4.4"
+
+[dependencies.mime_guess]
+git = "https://github.com/soyuka/mime_guess"
+branch = "more-mime"
 
 [dependencies.rocket_contrib]
 path = "../../contrib/lib"

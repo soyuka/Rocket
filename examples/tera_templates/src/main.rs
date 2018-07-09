@@ -52,7 +52,7 @@ struct TemplateFile {
 static DEFAULT_SIZE: &str = "-";
 static DIRECTORY_FILE_TYPE: &str = "directory";
 static DEFAULT_MIME_TYPE: &str = "application/unknown";
-static HOME: &str = "/home/soyuka";
+static HOME: &str = "/home/abluchet";
 
 struct DirectoryPath {
     inner: PathBuf
@@ -130,7 +130,6 @@ impl<'a, 'r> FromRequest<'a, 'r> for DirectoryPath {
 
                 return Outcome::Forward(())
             },
-            // Redirect to 400 on readdir error
             Err(_reason) => Outcome::Success(DirectoryPath::new(home))
 
         }
@@ -165,28 +164,16 @@ fn index(path: DirectoryPath) -> Result<Template, Failure> {
 }
 
 #[get("/<path..>", rank = 2)]
-fn dir(path: DirectoryPath) -> Result<Template, Failure> {
-    if !path.is_dir() {
-        return Err(Failure(Status::BadRequest))
+fn dir(path: DirectoryPath) -> Result<Result<Template, Failure>, Option<NamedFile>> {
+    if path.is_dir() {
+        Ok(list(path))
+    } else {
+        Err(download(path))
     }
-
-    list(path)
 }
 
-// #[get("/<path..>", rank = 2)]
-// fn dir(path: DirectoryPath) -> Result<Template, Failure> {
-//     if !path.is_dir() {
-//         return Err(Failure(Status::BadRequest))
-//     }
-//
-//     list(path)
-// }
-
-/**
- * File download
- */
-#[get("/_/<path..>", rank = 2)]
-fn download(path: PathBuf) -> Option<NamedFile> {
+#[get("/<path..>", rank = 3)]
+fn download(path: DirectoryPath) -> Option<NamedFile> {
     NamedFile::open(path).ok()
 }
 

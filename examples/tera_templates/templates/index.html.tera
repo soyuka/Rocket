@@ -22,8 +22,7 @@
             <td class="small">
               <input type="checkbox" />
             </td>
-            <td class="small">
-              {{ s.file_type }}
+            <td class="small" title="{{ s.file_type }}">
               {% if s.file_type == 'directory' %}
                 📁
               {% elif s.file_type == 'video' %}
@@ -33,7 +32,7 @@
               {% elif s.file_type == 'text' %}
                 📄
               {% elif s.file_type == 'image' %}
-								📷
+                📷
               {% else %}
                 📦
               {% endif %}
@@ -42,8 +41,20 @@
             <td class="time">{{s.mtime}}</td>
             <td class="size">{{s.size}}</td>
             <td class="actions">
-              <span title="download"><a href="{{s.path}}">🔗</a></span>
-              <span title="subtitles">🚩</span>
+              {% if s.ext == 'zip' or s.ext == 'rar' %}
+                <span title="extract"><a href="{{s.path}}">🗃</a></span>
+              {% endif %}
+
+              {% if s.file_type == 'directory' %}
+                <span title="compress"><a href="{{s.path}}">🗜</a></span>
+              {% else %}
+                <span title="download"><a href="/{{s.path}}">🔗</a></span>
+              {% endif %}
+
+              {% if s.file_type == 'video' %}
+                <span title="subtitles">🚩</span>
+              {% endif %}
+
               <span title="trash">🗑</span>
             </td>
           </tr>

@@ -1,4 +1,4 @@
-#![feature(plugin, decl_macro)]
+#![feature(plugin, decl_macro, custom_derive)]
 #![plugin(rocket_codegen)]
 
 extern crate rocket_contrib;
@@ -12,7 +12,7 @@ extern crate mime_guess;
 
 #[cfg(test)] mod tests;
 
-use rocket::request::Request;
+use rocket::request::{Request};
 use rocket::response::{NamedFile, Failure};
 use rocket_contrib::Template;
 use std::collections::HashMap;
@@ -23,7 +23,17 @@ mod list;
 pub use directory_path::DirectoryPath;
 pub use list::list;
 
-static HOME: &str = "/home/soyuka";
+#[derive(Debug, Deserialize)]
+struct Config {
+    home: Option<String>,
+}
+
+#[derive(FromForm)]
+struct Task {
+    action: Option<String>
+}
+
+static HOME: &str = "/home/abluchet";
 
 #[get("/css/<file..>")]
 fn css(file: PathBuf) -> Option<NamedFile> {
@@ -35,8 +45,9 @@ fn index() -> Result<Template, Failure> {
     list(DirectoryPath::from_str(HOME), HOME)
 }
 
-#[get("/<path..>", rank = 2)]
-fn dir(path: DirectoryPath) -> Result<Result<Template, Failure>, Option<NamedFile>> {
+#[get("/<path..>?<task>", rank = 2)]
+fn dir(path: DirectoryPath, task: Task) -> Result<Result<Template, Failure>, Option<NamedFile>> {
+    println!("{}", task.action.unwrap_or(String::from("no action")));
     let path = DirectoryPath::new(Path::new(HOME).join(path));
 
     if path.is_dir() {

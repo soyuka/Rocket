@@ -37,22 +37,22 @@
                 📦
               {% endif %}
             </td>
-            <td class="name"><a href="/{{s.path}}">{{s.name}}</a></td>
+            <td class="name"><a href="{{s.path}}">{{s.name}}</a></td>
             <td class="time">{{s.mtime}}</td>
             <td class="size">{{s.size}}</td>
             <td class="actions">
               {% if s.ext == 'zip' or s.ext == 'rar' %}
-                <span title="extract"><a href="{{s.path}}">🗃</a></span>
+                <span title="extract"><a href="{{s.path}}?action=extract">🗃</a></span>
               {% endif %}
 
               {% if s.file_type == 'directory' %}
-                <span title="compress"><a href="{{s.path}}">🗜</a></span>
+                <span title="compress"><a href="{{s.path}}?action=compress">🗜</a></span>
               {% else %}
-                <span title="download"><a href="/{{s.path}}">🔗</a></span>
+                <span title="download"><a href="{{s.path}}">🔗</a></span>
               {% endif %}
 
               {% if s.file_type == 'video' %}
-                <span title="subtitles">🚩</span>
+                <span title="subtitles"><a href="{{s.path}}?action=subtitles">🚩</a></span>
               {% endif %}
 
               <span title="trash">🗑</span>

@@ -48,7 +48,7 @@ pub fn list(path: DirectoryPath, home: &str) -> Result<Template, Failure> {
 
 fn relative_path(path: &Path, root: &str) -> Result<String, StripPrefixError> {
     match path.strip_prefix(root) {
-        Ok(path) => Ok(String::from(path.to_str().unwrap_or("/"))),
+        Ok(path) => Ok(String::from(Path::new("/").join(path).to_str().unwrap_or("/"))),
         Err(reason) => Err(reason)
     }
 }
